@@ -1,0 +1,2 @@
+# CrossMasters
+testová úloha
