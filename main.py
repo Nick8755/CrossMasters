@@ -6,7 +6,8 @@ A zajímalo by mě i jestli se to v jednotlivých měsících mění."""
 import pandas as pd
 import openpyxl
 import matplotlib.pyplot as plt
-from adjustText import adjust_text
+
+
 
 data = pd.ExcelFile('Data.xlsx') #načteme excel soubor
 #print(data.sheet_names) #vypíše názvy listů v excelu (pro kontrolu]
