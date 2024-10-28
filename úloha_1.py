@@ -2,16 +2,16 @@
 Na jaké kategorii produktů máme největší obrat?
 A zajímalo by mě i jestli se to v jednotlivých měsících mění."""
 
-# Nejdřive importujeme knihovny a data pro jejich zpracování
+# Nejdřive importujeme knihovny a data pro zpracování
 import pandas as pd
 import openpyxl
 import matplotlib.pyplot as plt
 
-data = pd.ExcelFile('Data.xlsx') #načteme excel soubor
-#print(data.sheet_names) #vypíše názvy listů v excelu (pro kontrolu)
-df1 = data.parse('Transactions') #načte list Transactions
-df2 = data.parse('Products') #načte list Products
-df_merged = pd.merge(df1, df2, on='Product name', how='inner') #sloučí listy podle názvu produktu
+data = pd.ExcelFile('Data.xlsx') # načteme excel soubor
+#print(data.sheet_names) # vypíše názvy listů v excelu (pro kontrolu)
+df1 = data.parse('Transactions') # načte list Transactions
+df2 = data.parse('Products') # načte list Products
+df_merged = pd.merge(df1, df2, on='Product name', how='inner') # sloučí listy podle názvu produktu
 #print(df_merged.info()) #vypíše informace o sloučeném listu (pro kontrolu)
 
 # Vypíšeme unikátní produkty
@@ -59,10 +59,9 @@ for category in monthly_revenue_pivot.columns:
 plt.title('Měsíční obrat každé kategorií')
 plt.xlabel('Měsíc')
 plt.ylabel('Obrat')
-plt.xticks(rotation=45)
 
 # Přidáme popisky k jednotlivým bodům (anotace)
-y_values = {}
+y_values = {} # to budeme potřebovat pro kontrolu, zda se hodnoty kryjí
 
 for i, row in monthly_revenue.iterrows():
     month_str = row['Month'].strftime('%Y-%m')  # měníme typ data na string ve formátu 'YYYY-MM'
@@ -70,12 +69,18 @@ for i, row in monthly_revenue.iterrows():
     revenue = f"({row['Revenue']:.0f} Kč)"  # formátujeme na ceny v Kč
     annotation_text = f"{percentage} {revenue}"
 
+    month_labels = [f"{month}\n(Celkem za měsíc: {total_revenue[total_revenue['Month'] == month]['Total Revenue'].values[0]:.0f} Kč)" for
+                    month in monthly_revenue_pivot.index.astype(str)]
+    plt.xticks(ticks=range(len(month_labels)), labels=month_labels)
+
+# Pokud se hodnoty překrývají, posuneme je o 10 bodů nahoru
     y_start = 10
+    # Tato čast kodu bude posouvat text anotaci nahoru, pokud se hodnoty překrývají
     if month_str in y_values:
         for previous_value in y_values[month_str]:
             if abs(row['Revenue'] - previous_value) < 200:
-                y_start += 10
-
+                y_start += 10 # posuneme text o 10 bodů nahoru
+# Vytvoříme a nastavime anotaci
     plt.annotate(annotation_text,
                 (month_str, row['Revenue']),
                 textcoords="offset points",
