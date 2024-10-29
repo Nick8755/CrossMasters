@@ -22,8 +22,8 @@ sales_after = df_merged[df_merged['Date'] >= budget_increase_date].groupby('Week
 
 # Porovnáme obrat před a po zvýšení rozpočtu
 sales_comparison = pd.DataFrame({'Obrat před': sales_before, 'Obrat po': sales_after}).fillna(0) #vytvoříme dataframe pro porovnání
-average_sales_before = sales_comparison['Obrat před'].mean() #spočítáme průměrný obrat (za týden) před zvýšením rozpočtu
-average_sales_after = sales_comparison['Obrat po'].mean() #spočítáme průměrný obrat (za týden) po zvýšení rozpočtu
+average_sales_before = sales_comparison[sales_comparison['Obrat před']>0]['Obrat před'].mean() #spočítáme průměrný obrat (za týden) před zvýšením rozpočtu
+average_sales_after = sales_comparison[sales_comparison['Obrat po'] > 0]['Obrat po'].mean() #spočítáme průměrný obrat (za týden) po zvýšení rozpočtu
 # Vypíšeme výsledky
 print("Srovnání prodejů před a po navýšení rozpočtu na online marketing podle týdnů:")
 print(sales_comparison)
@@ -33,7 +33,7 @@ print(f"Průměr obratu za týden po zvýšení rozpočtu: {average_sales_after:
 # Vytvoříme df pro porovnání prodejů před a po zvýšení rozpočtu a rozdělíme to podle kategorií
 sales_before = df_merged[df_merged['Date'] < budget_increase_date].groupby(['Week', 'Category'])['Revenue'].sum().unstack(fill_value=0)
 sales_after = df_merged[df_merged['Date'] >= budget_increase_date].groupby(['Week', 'Category'])['Revenue'].sum().unstack(fill_value=0)
-sales_comparison = pd.concat([sales_before.add_suffix(' (Before)'), sales_after.add_suffix(' (After)')], axis=1) # sloučíme data pro porovnání
+sales_comparison = pd.concat([sales_before.add_suffix(' (Před)'), sales_after.add_suffix(' (Po)')], axis=1) # sloučíme data pro porovnání
 
 '''
 # Выводим результаты (pro kontrolu)
